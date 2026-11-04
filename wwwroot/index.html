@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TransferGraph</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <h1>TransferGraph</h1>
+    <section class="card">
+      <label>Polazak</label><select id="from"></select>
+      <label>Odredište</label><select id="to"></select>
+      <label>Šta tražiš</label>
+      <select id="mode">
+        <option value="stops">Najmanje stanica</option>
+        <option value="fastest">Najbrži put</option>
+        <option value="transfers">Najmanje presedanja</option>
+      </select>
+      <button id="go">Nađi put</button>
+      <p id="out"></p>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

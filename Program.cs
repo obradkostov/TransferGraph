@@ -1,30 +1,18 @@
 using Neo4j.Driver;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
 var driver = GraphDatabase.Driver(
     builder.Configuration["Neo4j:Uri"]!,
-    AuthTokens.Basic(
-        builder.Configuration["Neo4j:User"]!,
-        builder.Configuration["Neo4j:Password"]!));
+    AuthTokens.Basic(builder.Configuration["Neo4j:User"]!, builder.Configuration["Neo4j:Password"]!));
 await driver.VerifyConnectivityAsync();
 Console.WriteLine("Neo4j veza radi");
+
+builder.Services.AddSingleton(driver);
+builder.Services.AddControllers();
+
+var app = builder.Build();
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.MapControllers();
 app.Run();
