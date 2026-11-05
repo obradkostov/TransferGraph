@@ -41,7 +41,8 @@ async function loadHubs() {
 
 async function toggleClosed() {
   const s = stops.find(x => x.id === $("cStop").value);
-  await fetch(`/api/stops/${s.id}/closed?closed=${!s.closed}`, { method: "POST" });
+  const r = await fetch(`/api/stops/${s.id}/closed?closed=${!s.closed}`, { method: "POST" });
+  if (!r.ok) { $("cOut").textContent = "Greška na serveru."; return; }
   $("cOut").textContent = `${s.name}: ${s.closed ? "ponovo otvorena" : "zatvorena"}`;
   await loadStops();
 }
