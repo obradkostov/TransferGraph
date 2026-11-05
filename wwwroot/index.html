@@ -1,16 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TransferGraph</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <main class="app">
     <h1>TransferGraph</h1>
     <section class="card">
+      <section class="card">
+        <h2>Domet</h2>
+        <label>Od stanice</label><select id="rFrom"></select>
+        <label>Za koliko minuta (najviše 30)</label><input id="rMin" type="number" value="10" min="1" max="30">
+        <button id="rGo">Prikaži</button>
+        <p id="rOut"></p>
+      </section>
+      <section class="card">
+        <h2>Čvorišta</h2>
+        <p id="hubs"></p>
+      </section>
+      <section class="card">
+        <h2>Zatvaranje stanice</h2>
+        <select id="cStop"></select>
+        <button id="cBtn">Zatvori / otvori</button>
+        <p id="cOut"></p>
+      </section>
       <label>Polazak</label><select id="from"></select>
       <label>Odredište</label><select id="to"></select>
       <label>Šta tražiš</label>
@@ -25,4 +44,5 @@
   </main>
   <script src="app.js"></script>
 </body>
+
 </html>

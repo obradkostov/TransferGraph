@@ -8,3 +8,7 @@ label { display:block; margin:12px 0 4px; color:var(--muted); font-size:.9rem; }
 select, button { width:100%; padding:12px; font-size:16px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); }
 button { margin-top:16px; background:var(--accent); border-color:var(--accent); font-weight:600; cursor:pointer; }
 #out { margin:16px 0 0; line-height:1.6; font-weight:600; }
+input { width:100%; padding:12px; font-size:16px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); }
+.card + .card { margin-top:16px; }
+h2 { margin:0 0 4px; font-size:1.2rem; }
+#out, #rOut, #hubs, #cOut { white-space: pre-line; line-height:1.6; }

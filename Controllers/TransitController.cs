@@ -59,4 +59,43 @@ public class TransitController : ControllerBase
         if (rows.Count == 0) return NotFound(new { error = "Nema puta (stanica je možda zatvorena)." });
         return Ok(rows[0].Values);
     }
+    // Do kojih stanica stižem za najviše X minuta
+[HttpGet("reach")]
+public async Task<IActionResult> Reach(string from, int minutes = 10)
+{
+    await using var session = _driver.AsyncSession();
+    var cursor = await session.RunAsync(@"
+        MATCH p = (a:Stop {id:$from})-[:NEXT*1..8]->(b:Stop)
+        WHERE b <> a AND none(n IN nodes(p) WHERE coalesce(n.closed,false) = true)
+        WITH b, min(reduce(t=0, r IN relationships(p) | t + r.minutes)) AS minuta
+        WHERE minuta <= $minutes
+        RETURN b.name AS stanica, minuta
+        ORDER BY minuta, stanica", new { from, minutes });
+    var rows = await cursor.ToListAsync();
+    return Ok(rows.Select(r => new { stanica = r["stanica"].As<string>(), minuta = r["minuta"].As<long>() }));
+}
+
+// Čvorišta: stanice kroz koje prolazi najviše linija
+[HttpGet("hubs")]
+public async Task<IActionResult> Hubs()
+{
+    await using var session = _driver.AsyncSession();
+    var cursor = await session.RunAsync(@"
+        MATCH (s:Stop)-[:ON_LINE]->(l:Line)
+        RETURN s.name AS stanica, count(l) AS broj, collect(l.name) AS linije
+        ORDER BY broj DESC, stanica LIMIT 10");
+    var rows = await cursor.ToListAsync();
+    return Ok(rows.Select(r => new { stanica = r["stanica"].As<string>(), linije = r["linije"].As<List<string>>() }));
+}
+
+// Zatvori / otvori stanicu
+[HttpPost("stops/{id}/closed")]
+public async Task<IActionResult> SetClosed(string id, bool closed)
+{
+    await using var session = _driver.AsyncSession();
+    var cursor = await session.RunAsync(
+        "MATCH (s:Stop {id:$id}) SET s.closed = $closed RETURN s.name AS name", new { id, closed });
+    var rows = await cursor.ToListAsync();
+    return rows.Count == 0 ? NotFound() : Ok(new { name = rows[0]["name"].As<string>(), closed });
+}
 }
