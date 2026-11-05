@@ -105,8 +105,10 @@ public class TransitController : ControllerBase
         var cursor = await session.RunAsync(
             @"
         MATCH (s:Stop)-[:ON_LINE]->(l:Line)
-        RETURN s.name AS stanica, count(l) AS broj, collect(l.name) AS linije
-        ORDER BY broj DESC, stanica LIMIT 10"
+        WITH s, count(l) AS broj, collect(l.name) AS linije
+        WHERE broj > 1
+        RETURN s.name AS stanica, linije
+        ORDER BY broj DESC, stanica"
         );
         var rows = await cursor.ToListAsync();
         return Ok(
@@ -132,20 +134,25 @@ public class TransitController : ControllerBase
             ? NotFound()
             : Ok(new { name = rows[0]["name"].As<string>(), closed });
     }
+
     [HttpGet("graph")]
-public async Task<IActionResult> Graph()
-{
-    await using var session = _driver.AsyncSession();
-    var cursor = await session.RunAsync(@"
-        MATCH (a:Stop)-[n:NEXT]->(b:Stop) WHERE a.id < b.id
-        RETURN a.id AS `from`, b.id AS `to`, n.minutes AS minutes, toString(n.line) AS line");
-    var rows = await cursor.ToListAsync();
-    return Ok(rows.Select(r => new
+    public async Task<IActionResult> Graph()
     {
-        from = r["from"].As<string>(),
-        to = r["to"].As<string>(),
-        minutes = r["minutes"].As<long>(),
-        line = r["line"].As<string>()
-    }));
-}
+        await using var session = _driver.AsyncSession();
+        var cursor = await session.RunAsync(
+            @"
+        MATCH (a:Stop)-[n:NEXT]->(b:Stop) WHERE a.id < b.id
+        RETURN a.id AS `from`, b.id AS `to`, n.minutes AS minutes, toString(n.line) AS line"
+        );
+        var rows = await cursor.ToListAsync();
+        return Ok(
+            rows.Select(r => new
+            {
+                from = r["from"].As<string>(),
+                to = r["to"].As<string>(),
+                minutes = r["minutes"].As<long>(),
+                line = r["line"].As<string>(),
+            })
+        );
+    }
 }

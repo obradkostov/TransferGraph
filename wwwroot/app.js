@@ -20,9 +20,9 @@ async function findRoute() {
 
   const tok = d.tok.map((x, i) => mode === "transfers" && i % 2 ? `[linija ${x}]` : x).join(" → ");
   const info = [];
-  if (d.stanica !== undefined) info.push(`${d.stanica} deonice`);
-  if (d.minuta !== undefined) info.push(`${d.minuta} min`);
-  if (d.presedanja !== undefined) info.push(`presedanja: ${d.presedanja}`);
+  if (d.stanica !== undefined) info.push(`Broj deonica: ${d.stanica}`);
+  if (d.minuta !== undefined) info.push(`Vreme: ${d.minuta} min`);
+  if (d.presedanja !== undefined) info.push(`Presedanja: ${d.presedanja}`);
   $("out").textContent = `${tok}\n${info.join(" · ")}`;
 }
 
@@ -43,7 +43,7 @@ async function toggleClosed() {
   const s = stops.find(x => x.id === $("cStop").value);
   const r = await fetch(`/api/stops/${s.id}/closed?closed=${!s.closed}`, { method: "POST" });
   if (!r.ok) { $("cOut").textContent = "Greška na serveru."; return; }
-  $("cOut").textContent = `${s.name}: ${s.closed ? "ponovo otvorena" : "zatvorena"}`;
+  $("cOut").textContent = `Stanica ${s.name}: ${s.closed ? "otvorena" : "zatvorena"}`;
   await loadStops();
 }
 
