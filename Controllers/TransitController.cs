@@ -47,12 +47,20 @@ public class TransitController(TransitRepository repository) : ControllerBase
             return BadRequest(new { error = "Naziv mora imati 1 do 30 karaktera." });
         if (stop.Minutes < 1 || stop.Minutes > 30)
             return BadRequest(new { error = "Minuta mora biti od 1 do 30." });
-        if (await repository.StopNameExistsAsync(name)) 
-            return Conflict(new { error = "Stanica sa tim imenom već postoji." }); 
+        if (await repository.StopNameExistsAsync(name))
+            return Conflict(new { error = "Stanica sa tim imenom već postoji." });
 
         var id = await repository.AddStopAsync(stop);
         return id is null
             ? NotFound(new { error = "Izabrana stanica nije na izabranoj liniji." })
             : Ok(new { id });
     }
+
+    [HttpDelete("stops/{id}")]
+    public async Task<ActionResult> DeleteStop(string id) =>
+        await repository.DeleteStopAsync(id)
+            ? Ok()
+            : Conflict(new { error = "Može se obrisati samo krajnja stanica linije." });
+
+    
 }

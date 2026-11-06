@@ -168,4 +168,17 @@ public class TransitRepository(IDriver driver)
         );
         return rows[0]["n"].As<int>() > 0;
     }
+
+    public async Task<bool> DeleteStopAsync(string id)
+    {
+        var rows = await QueryAsync(
+            @"
+            MATCH (s:Stop {id:$id})
+            WHERE size([(s)-[:NEXT]->() | 1]) = 1
+            DETACH DELETE s
+            RETURN count(*) AS obrisano",
+            new { id }
+        );
+        return rows[0]["obrisano"].As<int>() > 0;
+    }
 }

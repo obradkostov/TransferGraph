@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="sr">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TransferGraph</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <main class="app">
     <h1>TransferGraph</h1>
@@ -52,15 +54,26 @@
         <label>Poveži sa stanicom</label><select id="aTo"></select>
         <label>Linija</label>
         <select id="aLine">
-          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
         </select>
         <label>Minuta do te stanice</label>
         <input id="aMin" type="number" value="3" min="1" max="30">
         <button id="aBtn">Dodaj stanicu</button>
         <p id="aOut"></p>
       </section>
+      <section class="card">
+        <h2>Brisanje stanice</h2>
+        <select id="dStop"></select>
+        <button id="dBtn">Obriši</button>
+        <p id="dOut"></p>
+      </section>
     </div>
   </main>
   <script src="app.js"></script>
 </body>
+
 </html>

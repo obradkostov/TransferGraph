@@ -4,7 +4,7 @@ let stops = [];
 // ---------- Stanice u padajucim listama ----------
 async function loadStops() {
   stops = await (await fetch("/api/stops")).json();
-  for (const id of ["from", "to", "rFrom", "cStop", "aTo"]) {
+  for (const id of ["from", "to", "rFrom", "cStop", "aTo", "dStop"]) {
     const sel = $(id), keep = sel.value;
     sel.innerHTML = "";
     for (const s of stops) sel.add(new Option(s.name + (s.closed ? " (zatvorena)" : ""), s.id));
@@ -65,7 +65,15 @@ async function addStop() {
   $("aOut").textContent = r.ok ? `Stanica ${name} je dodata.` : d.error;
   if (r.ok) { $("aName").value = ""; await loadStops(); await loadHubs(); }
 }
-
+async function deleteStop() {
+  const s = stops.find(x => x.id === $("dStop").value);
+  if (!confirm(`Obrisati stanicu ${s.name}?`)) return;
+  const r = await fetch(`/api/stops/${s.id}`, { method: "DELETE" });
+  const d = await r.json().catch(() => ({}));
+  $("dOut").textContent = r.ok ? `Stanica ${s.name} je obrisana.` : d.error;
+  if (r.ok) { await loadStops(); await loadHubs(); }
+}
+$("dBtn").onclick = deleteStop;
 $("go").onclick = findRoute;
 $("rGo").onclick = reach;
 $("cBtn").onclick = toggleClosed;
