@@ -1,54 +1,66 @@
 <!DOCTYPE html>
 <html lang="sr">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TransferGraph</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
   <main class="app">
     <h1>TransferGraph</h1>
+
     <div class="cards">
-    <section class="card">
-      <h2>Put od A do B</h2>
-      <label>Polazak</label><select id="from"></select>
-      <label>Odredište</label><select id="to"></select>
-      <label>Šta tražiš</label>
-      <select id="mode">
-        <option value="stops">Najmanje stanica</option>
-        <option value="fastest">Najbrži put</option>
-        <option value="transfers">Najmanje presedanja</option>
-      </select>
-      <button id="go">Nađi put</button>
-      <p id="out"></p>
-    </section>
+      <section class="card">
+        <h2>Put od A do B</h2>
+        <label>Polazak</label><select id="from"></select>
+        <label>Odredište</label><select id="to"></select>
+        <label>Šta tražiš</label>
+        <select id="mode">
+          <option value="stops">Najmanje stanica</option>
+          <option value="fastest">Najbrži put</option>
+          <option value="transfers">Najmanje presedanja</option>
+        </select>
+        <button id="go">Nađi put</button>
+        <p id="out"></p>
+      </section>
 
-    <section class="card">
-      <h2>Domet</h2>
-      <label>Od stanice</label><select id="rFrom"></select>
-      <label>Za koliko minuta (najviše 30)</label>
-      <input id="rMin" type="number" value="10" min="1" max="30">
-      <button id="rGo">Prikaži</button>
-      <p id="rOut"></p>
-    </section>
+      <section class="card">
+        <h2>Domet</h2>
+        <label>Od stanice</label><select id="rFrom"></select>
+        <label>Za koliko minuta (najviše 30)</label>
+        <input id="rMin" type="number" value="10" min="1" max="30">
+        <button id="rGo">Prikaži</button>
+        <p id="rOut"></p>
+      </section>
 
-    <section class="card">
-      <h2>Čvorišta</h2>
-      <p id="hubs"></p>
-    </section>
+      <section class="card">
+        <h2>Čvorišta</h2>
+        <p id="hubs"></p>
+      </section>
 
-    <section class="card">
-      <h2>Zatvaranje stanice</h2>
-      <select id="cStop"></select>
-      <button id="cBtn">Zatvori / otvori</button>
-      <p id="cOut"></p>
-    </section>
+      <section class="card">
+        <h2>Zatvaranje stanice</h2>
+        <select id="cStop"></select>
+        <button id="cBtn">Zatvori / otvori</button>
+        <p id="cOut"></p>
+      </section>
+
+      <section class="card">
+        <h2>Nova stanica</h2>
+        <label>Naziv</label><input id="aName" maxlength="30">
+        <label>Poveži sa stanicom</label><select id="aTo"></select>
+        <label>Linija</label>
+        <select id="aLine">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+        <label>Minuta do te stanice</label>
+        <input id="aMin" type="number" value="3" min="1" max="30">
+        <button id="aBtn">Dodaj stanicu</button>
+        <p id="aOut"></p>
+      </section>
     </div>
   </main>
   <script src="app.js"></script>
 </body>
-
 </html>

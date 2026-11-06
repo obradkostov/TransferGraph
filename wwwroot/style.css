@@ -3,12 +3,13 @@
 body { margin:0; padding:24px 16px; font-family:system-ui,sans-serif; background:var(--bg); color:var(--text); }
 .app { max-width:1100px; margin:0 auto; }
 h1 { text-align:center; margin:0 0 20px; }
+h2 { margin:0 0 4px; font-size:1.2rem; }
 .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; }
 label { display:block; margin:12px 0 4px; color:var(--muted); font-size:.9rem; }
-select, button { width:100%; padding:12px; font-size:16px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); }
+select, input, button { width:100%; padding:12px; font-size:16px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); }
 button { margin-top:16px; background:var(--accent); border-color:var(--accent); font-weight:600; cursor:pointer; }
-#out { margin:16px 0 0; line-height:1.6; font-weight:600; }
-input { width:100%; padding:12px; font-size:16px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); }
-h2 { margin:0 0 4px; font-size:1.2rem; }
+#out { font-weight:600; }
+#out, #rOut, #hubs, #cOut, #aOut { margin:16px 0 0; white-space:pre-line; line-height:1.6; }
+
+/* kartice jedna pored druge; na telefonu jedna ispod druge */
 .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; align-items:start; }
-#out, #rOut, #hubs, #cOut { white-space: pre-line; line-height:1.6; }

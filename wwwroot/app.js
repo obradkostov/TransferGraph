@@ -1,9 +1,10 @@
 const $ = id => document.getElementById(id);
 let stops = [];
 
+// ---------- Stanice u padajucim listama ----------
 async function loadStops() {
   stops = await (await fetch("/api/stops")).json();
-  for (const id of ["from", "to", "rFrom", "cStop"]) {
+  for (const id of ["from", "to", "rFrom", "cStop", "aTo"]) {
     const sel = $(id), keep = sel.value;
     sel.innerHTML = "";
     for (const s of stops) sel.add(new Option(s.name + (s.closed ? " (zatvorena)" : ""), s.id));
@@ -12,12 +13,14 @@ async function loadStops() {
   if (!$("to").dataset.init) { $("to").selectedIndex = 1; $("to").dataset.init = "1"; }
 }
 
+// ---------- Put od A do B ----------
 async function findRoute() {
   const mode = $("mode").value;
   const r = await fetch(`/api/route?from=${$("from").value}&to=${$("to").value}&mode=${mode}`);
   const d = await r.json();
   if (!r.ok) { $("out").textContent = d.error; return; }
 
+  // u rezimu "transfers" svaki drugi element je linija, a ne stanica
   const tok = d.tok.map((x, i) => mode === "transfers" && i % 2 ? `[linija ${x}]` : x).join(" → ");
   const info = [];
   if (d.stanica !== undefined) info.push(`Broj deonica: ${d.stanica}`);
@@ -26,6 +29,7 @@ async function findRoute() {
   $("out").textContent = `${tok}\n${info.join(" · ")}`;
 }
 
+// ---------- Domet ----------
 async function reach() {
   const r = await fetch(`/api/reach?from=${$("rFrom").value}&minutes=${$("rMin").value}`);
   const d = await r.json();
@@ -34,11 +38,13 @@ async function reach() {
     : "Nema stanica u dometu.";
 }
 
+// ---------- Cvorista ----------
 async function loadHubs() {
   const d = await (await fetch("/api/hubs")).json();
   $("hubs").textContent = d.map(x => `${x.stanica}: linije ${x.linije.join(", ")}`).join("\n");
 }
 
+// ---------- Zatvaranje stanice ----------
 async function toggleClosed() {
   const s = stops.find(x => x.id === $("cStop").value);
   const r = await fetch(`/api/stops/${s.id}/closed?closed=${!s.closed}`, { method: "POST" });
@@ -47,8 +53,23 @@ async function toggleClosed() {
   await loadStops();
 }
 
+// ---------- Nova stanica ----------
+async function addStop() {
+  const name = $("aName").value;
+  const r = await fetch("/api/stops", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, connectTo: $("aTo").value, line: $("aLine").value, minutes: Number($("aMin").value) })
+  });
+  const d = await r.json();
+  $("aOut").textContent = r.ok ? `Stanica ${name} je dodata.` : d.error;
+  if (r.ok) { $("aName").value = ""; await loadStops(); await loadHubs(); }
+}
+
 $("go").onclick = findRoute;
 $("rGo").onclick = reach;
 $("cBtn").onclick = toggleClosed;
+$("aBtn").onclick = addStop;
+
 loadStops();
 loadHubs();
