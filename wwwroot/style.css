@@ -14,3 +14,4 @@ button { margin-top:16px; background:var(--accent); border-color:var(--accent); 
 /* kartice jedna pored druge; na telefonu jedna ispod druge */
 .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; align-items:start; }
 #rOut { max-height: 260px; overflow-y: auto; }
+#dOut { max-height: 260px; overflow-y: auto; }
