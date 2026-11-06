@@ -10,11 +10,14 @@ namespace TransferGraph.Controllers;
 public class TransitController(TransitRepository repository) : ControllerBase
 {
     [HttpGet("stops")]
-    public async Task<ActionResult<List<Stop>>> GetStops() =>
-        Ok(await repository.GetStopsAsync());
+    public async Task<ActionResult<List<Stop>>> GetStops() => Ok(await repository.GetStopsAsync());
 
     [HttpGet("route")]
-    public async Task<ActionResult<RouteResult>> GetRoute(string from, string to, string mode = "stops")
+    public async Task<ActionResult<RouteResult>> GetRoute(
+        string from,
+        string to,
+        string mode = "stops"
+    )
     {
         if (mode is not ("stops" or "fastest" or "transfers"))
             return BadRequest(new { error = "Nepoznat mode." });
@@ -30,8 +33,7 @@ public class TransitController(TransitRepository repository) : ControllerBase
         Ok(await repository.GetReachAsync(from, Math.Clamp(minutes, 1, 30)));
 
     [HttpGet("hubs")]
-    public async Task<ActionResult<List<HubItem>>> GetHubs() =>
-        Ok(await repository.GetHubsAsync());
+    public async Task<ActionResult<List<HubItem>>> GetHubs() => Ok(await repository.GetHubsAsync());
 
     [HttpPost("stops/{id}/closed")]
     public async Task<ActionResult> SetClosed(string id, bool closed) =>
@@ -45,10 +47,12 @@ public class TransitController(TransitRepository repository) : ControllerBase
             return BadRequest(new { error = "Naziv mora imati 1 do 30 karaktera." });
         if (stop.Minutes < 1 || stop.Minutes > 30)
             return BadRequest(new { error = "Minuta mora biti od 1 do 30." });
+        if (await repository.StopNameExistsAsync(name)) 
+            return Conflict(new { error = "Stanica sa tim imenom već postoji." }); 
 
         var id = await repository.AddStopAsync(stop);
         return id is null
-            ? NotFound(new { error = "Stanica ili linija ne postoji." })
+            ? NotFound(new { error = "Izabrana stanica nije na izabranoj liniji." })
             : Ok(new { id });
     }
 }
